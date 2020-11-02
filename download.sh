@@ -1,17 +1,24 @@
-if [ $# -lt 1 ]; then
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
   echo "please select a language code from the following:"
   declare -a LANGS=$(curl -is http://data.statmt.org/news-crawl/ | grep -Po "(?<==\")\w+(?=/)")
   echo $LANGS | sed 's/ /\n/g'
+  exit 1
 else
   LANG=$1
   echo "downloading news crawl in '$LANG'"
 fi
 
-$DL_DIR="news-crawl"
+DL_DIR="news-crawl"
 
-if [ ! -d $DL_DIR ]; then
+if [ ! -d $DL_DIR ]
+then
   mkdir $DL_DIR
 fi
+
+echo "downloading news crawl to '$DL_DIR/'"
 
 wget \
   --continue \
@@ -22,7 +29,6 @@ wget \
   --directory-prefix $DL_DIR \
   --span-hosts \
   --tries 1 \
-  --timestamping \
   --accept .gz \
   -e robots=off \
   http://data.statmt.org/news-crawl/$LANG/
